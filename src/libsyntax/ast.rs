@@ -893,7 +893,6 @@ pub enum Lit_ {
     LitInt(u64, LitIntType),
     LitFloat(InternedString, FloatTy),
     LitFloatUnsuffixed(InternedString),
-    LitNil,
     LitBool(bool),
 }
 
@@ -1085,9 +1084,6 @@ pub struct BareFnTy {
 
 #[deriving(Clone, PartialEq, Eq, Encodable, Decodable, Hash, Show)]
 pub enum Ty_ {
-    TyNil,
-    TyBot, /* bottom type */
-    TyUniq(P<Ty>),
     TyVec(P<Ty>),
     TyFixedLengthVec(P<Ty>, P<Expr>),
     TyPtr(MutTy),
@@ -1159,8 +1155,7 @@ impl Arg {
 #[deriving(Clone, PartialEq, Eq, Encodable, Decodable, Hash, Show)]
 pub struct FnDecl {
     pub inputs: Vec<Arg>,
-    pub output: P<Ty>,
-    pub cf: RetStyle,
+    pub output: FunctionRetTy,
     pub variadic: bool
 }
 
@@ -1182,12 +1177,21 @@ impl fmt::Show for FnStyle {
 }
 
 #[deriving(Clone, PartialEq, Eq, Encodable, Decodable, Hash, Show)]
-pub enum RetStyle {
+pub enum FunctionRetTy {
     /// Functions with return type ! that always
     /// raise an error or exit (i.e. never return to the caller)
-    NoReturn,
+    NoReturn(Span),
     /// Everything else
-    Return,
+    Return(P<Ty>),
+}
+
+impl FunctionRetTy {
+    pub fn span(&self) -> Span {
+        match *self {
+            NoReturn(span) => span,
+            Return(ref ty) => ty.span
+        }
+    }
 }
 
 /// Represents the kind of 'self' associated with a method

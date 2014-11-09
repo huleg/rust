@@ -1375,16 +1375,18 @@ pub fn create_function_debug_context(cx: &CrateContext,
         let mut signature = Vec::with_capacity(fn_decl.inputs.len() + 1);
 
         // Return type -- llvm::DIBuilder wants this at index 0
-        match fn_decl.output.node {
-            ast::TyNil => {
-                signature.push(ptr::null_mut());
-            }
-            _ => {
-                assert_type_for_node_id(cx, fn_ast_id, error_reporting_span);
+        if let ast::Return(ref ret_ty) = fn_decl.output {
+            match ret_ty.node {
+                ast::TyTup(ref tys) if tys.is_empty() => {
+                    signature.push(ptr::null_mut());
+                }
+                _ => {
+                    assert_type_for_node_id(cx, fn_ast_id, error_reporting_span);
 
-                let return_type = ty::node_id_to_type(cx.tcx(), fn_ast_id);
-                let return_type = return_type.substp(cx.tcx(), param_substs);
-                signature.push(type_metadata(cx, return_type, codemap::DUMMY_SP));
+                    let return_type = ty::node_id_to_type(cx.tcx(), fn_ast_id);
+                    let return_type = return_type.substp(cx.tcx(), param_substs);
+                    signature.push(type_metadata(cx, return_type, codemap::DUMMY_SP));
+                }
             }
         }
 
