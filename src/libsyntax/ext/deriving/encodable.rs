@@ -79,7 +79,7 @@
 //!     }
 //! ```
 
-use ast::{MetaItem, Item, Expr, ExprRet, MutMutable, LitNil};
+use ast::{MetaItem, Item, Expr, ExprRet, MutMutable};
 use codemap::Span;
 use ext::base::ExtCtxt;
 use ext::build::AstBuilder;
@@ -177,7 +177,7 @@ fn encodable_substructure(cx: &mut ExtCtxt, trait_span: Span,
             if stmts.is_empty() {
                 let ret_ok = cx.expr(trait_span,
                                      ExprRet(Some(cx.expr_ok(trait_span,
-                                                             cx.expr_lit(trait_span, LitNil)))));
+                                                             cx.expr_tuple(trait_span, vec![])))));
                 stmts.push(cx.stmt_expr(ret_ok));
             }
 
@@ -222,7 +222,7 @@ fn encodable_substructure(cx: &mut ExtCtxt, trait_span: Span,
             if stmts.len() == 0 {
                 let ret_ok = cx.expr(trait_span,
                                      ExprRet(Some(cx.expr_ok(trait_span,
-                                                             cx.expr_lit(trait_span, LitNil)))));
+                                                             cx.expr_tuple(trait_span, vec![])))));
                 stmts.push(cx.stmt_expr(ret_ok));
             }
 
