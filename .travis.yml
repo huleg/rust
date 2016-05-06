@@ -8,6 +8,9 @@ services:
 git:
   submodules: false
 
+env:
+  - CXX=/usr/bin/g++-4.7 RUST_BACKTRACE=1
+
 before_install:
   - docker build -t rust -f src/etc/Dockerfile src/etc
 
@@ -26,7 +29,3 @@ script:
 
 notifications:
   email: false
-
-branches:
-  only:
-    - master
