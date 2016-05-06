@@ -85,7 +85,9 @@ pub enum CallConv {
     X86StdcallCallConv = 64,
     X86FastcallCallConv = 65,
     X86_64_Win64 = 79,
-    X86_VectorCall = 80
+    X86_VectorCall = 80,
+    AvrNonBlockingInterrupt = 84,
+    AvrInterrupt = 85,
 }
 
 #[derive(Copy, Clone)]
@@ -2395,6 +2397,12 @@ pub fn initialize_available_targets() {
                  LLVMInitializeARMTargetMC,
                  LLVMInitializeARMAsmPrinter,
                  LLVMInitializeARMAsmParser);
+    init_target!(llvm_component = "avr",
+                 LLVMInitializeAVRTargetInfo,
+                 LLVMInitializeAVRTarget,
+                 LLVMInitializeAVRTargetMC,
+                 LLVMInitializeAVRAsmPrinter,
+                 LLVMInitializeAVRAsmParser);
     init_target!(llvm_component = "aarch64",
                  LLVMInitializeAArch64TargetInfo,
                  LLVMInitializeAArch64Target,
