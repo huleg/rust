@@ -45,6 +45,8 @@ pub enum CallConv {
     X86_64_SysV = 78,
     X86_64_Win64 = 79,
     X86_VectorCall = 80,
+    AvrNonBlockingInterrupt = 84,
+    AvrInterrupt = 85,
 }
 
 /// LLVMRustLinkage

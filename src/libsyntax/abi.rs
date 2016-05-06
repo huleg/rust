@@ -26,6 +26,7 @@ pub enum Os {
     NaCl,
     Haiku,
     Solaris,
+    None,
 }
 
 #[derive(PartialEq, Eq, Hash, RustcEncodable, RustcDecodable, Clone, Copy, Debug)]
@@ -41,6 +42,8 @@ pub enum Abi {
     Aapcs,
     Win64,
     SysV64,
+    AvrInterrupt,
+    AvrNonBlockingInterrupt,
 
     // Multiplatform / generic ABIs
     Rust,
@@ -57,6 +60,7 @@ pub enum Architecture {
     X86,
     X86_64,
     Arm,
+    AVR,
     Mips,
     Mipsel
 }
@@ -82,6 +86,8 @@ const AbiDatas: &'static [AbiData] = &[
     AbiData {abi: Abi::Aapcs, name: "aapcs", generic: false },
     AbiData {abi: Abi::Win64, name: "win64", generic: false },
     AbiData {abi: Abi::SysV64, name: "sysv64", generic: false },
+    AbiData {abi: Abi::AvrInterrupt, name: "avr-interrupt", generic: false },
+    AbiData {abi: Abi::AvrNonBlockingInterrupt, name: "avr-non-blocking-interrupt", generic: false },
 
     // Cross-platform ABIs
     AbiData {abi: Abi::Rust, name: "Rust", generic: true },
@@ -143,6 +149,7 @@ impl fmt::Display for Os {
             Os::NaCl => "nacl".fmt(f),
             Os::Haiku => "haiku".fmt(f),
             Os::Solaris => "solaris".fmt(f),
+            Os::None => "none".fmt(f),
         }
     }
 }
