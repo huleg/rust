@@ -1561,7 +1561,7 @@ extern {
                                 Alignment: c_uint)
                                 -> ValueRef;
 
-    pub fn LLVMBuildAtomicCmpXchg(B: BuilderRef,
+    pub fn LLVMBuildAtomicCmpXchg2(B: BuilderRef,
                                   LHS: ValueRef,
                                   CMP: ValueRef,
                                   RHS: ValueRef,

@@ -203,7 +203,7 @@ extern "C" LLVMValueRef LLVMBuildAtomicStore(LLVMBuilderRef B,
     return wrap(unwrap(B)->Insert(si));
 }
 
-extern "C" LLVMValueRef LLVMBuildAtomicCmpXchg(LLVMBuilderRef B,
+extern "C" LLVMValueRef LLVMBuildAtomicCmpXchg2(LLVMBuilderRef B,
                                                LLVMValueRef target,
                                                LLVMValueRef old,
                                                LLVMValueRef source,
