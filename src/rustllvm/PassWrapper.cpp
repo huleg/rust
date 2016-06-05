@@ -188,7 +188,7 @@ LLVMRustCreateTargetMachine(const char *triple,
     }
 
     TargetOptions Options;
-    Options.PositionIndependentExecutable = PositionIndependentExecutable;
+    //    Options.PositionIndependentExecutable = PositionIndependentExecutable;
     Options.FloatABIType = FloatABI::Default;
     if (UseSoftFloat) {
         Options.FloatABIType = FloatABI::Soft;
