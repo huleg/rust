@@ -126,7 +126,7 @@ fn main() {
     // we don't pick up system libs because unfortunately they're for the host
     // of llvm-config, not the target that we're attempting to link.
     let mut cmd = Command::new(&llvm_config);
-    cmd.arg("--libs");
+    cmd.arg("--libnames");
     if !is_crossed {
         cmd.arg("--system-libs");
     }
@@ -137,6 +137,8 @@ fn main() {
             &lib[2..]
         } else if lib.starts_with("-") {
             &lib[1..]
+        } else if lib.ends_with(".a") {
+            &lib[3..(lib.len()-2)] // libLLVMProfileData.a
         } else {
             continue;
         };
