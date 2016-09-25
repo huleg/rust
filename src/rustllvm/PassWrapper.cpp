@@ -23,7 +23,7 @@
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 
 #if LLVM_VERSION_GT_OR_EQ(4, 0)
-#include "llvm/LinkAllPasses.h"
+#include "llvm/Transforms/IPO/AlwaysInliner.h"
 #endif
 
 #include "llvm-c/Transforms/PassManagerBuilder.h"
