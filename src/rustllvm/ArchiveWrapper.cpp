@@ -163,9 +163,15 @@ LLVMRustArchiveIteratorFree(LLVMRustArchiveIteratorRef rai) {
 
 extern "C" const char*
 LLVMRustArchiveChildName(LLVMRustArchiveChildConstRef child, size_t *size) {
+#if LLVM_VERSION_GT_OR_EQ(4, 0)
+    auto name_or_err = child->getName();
+    if (name_or_err)
+        return NULL;
+#else
     ErrorOr<StringRef> name_or_err = child->getName();
     if (name_or_err.getError())
         return NULL;
+#endif
     StringRef name = name_or_err.get();
     *size = name.size();
     return name.data();
@@ -174,11 +180,19 @@ LLVMRustArchiveChildName(LLVMRustArchiveChildConstRef child, size_t *size) {
 extern "C" const char*
 LLVMRustArchiveChildData(LLVMRustArchiveChildRef child, size_t *size) {
     StringRef buf;
+#if LLVM_VERSION_GT_OR_EQ(4, 0)
+    auto buf_or_err = child->getBuffer();
+    if (buf_or_err) {
+      LLVMRustSetLastError(toString(buf_or_err.takeError()).c_str());
+      return NULL;
+    }
+#else
     ErrorOr<StringRef> buf_or_err = child->getBuffer();
     if (buf_or_err.getError()) {
       LLVMRustSetLastError(buf_or_err.getError().message().c_str());
       return NULL;
     }
+#endif
     buf = buf_or_err.get();
     *size = buf.size();
     return buf.data();
