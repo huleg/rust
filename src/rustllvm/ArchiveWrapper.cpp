@@ -36,7 +36,6 @@ struct RustArchiveIterator {
     Archive::child_iterator cur;
     Archive::child_iterator end;
 #if LLVM_VERSION_GE(3, 9)
-    Error err;
 #endif
 };
 
@@ -115,9 +114,11 @@ LLVMRustArchiveIteratorNew(LLVMRustArchiveRef ra) {
 #if LLVM_VERSION_LE(3, 8)
     rai->cur = ar->child_begin();
 #else
-    rai->cur = ar->child_begin(rai->err);
-    if (rai->err) {
-        LLVMRustSetLastError(toString(std::move(rai->err)).c_str());
+    Error err = Error::success();
+
+    rai->cur = ar->child_begin(err);
+    if (err) {
+        LLVMRustSetLastError(toString(std::move(err)).c_str());
         return NULL;
     }
 #endif
@@ -128,8 +129,10 @@ LLVMRustArchiveIteratorNew(LLVMRustArchiveRef ra) {
 extern "C" LLVMRustArchiveChildConstRef
 LLVMRustArchiveIteratorNext(LLVMRustArchiveIteratorRef rai) {
 #if LLVM_VERSION_GE(3, 9)
-    if (rai->err) {
-        LLVMRustSetLastError(toString(std::move(rai->err)).c_str());
+    Error err = Error::success();
+
+    if (err) {
+        LLVMRustSetLastError(toString(std::move(err)).c_str());
         return NULL;
     }
 #endif
@@ -163,9 +166,10 @@ LLVMRustArchiveIteratorFree(LLVMRustArchiveIteratorRef rai) {
 
 extern "C" const char*
 LLVMRustArchiveChildName(LLVMRustArchiveChildConstRef child, size_t *size) {
-    ErrorOr<StringRef> name_or_err = child->getName();
-    if (name_or_err.getError())
+    Expected<StringRef> name_or_err = child->getName();
+    if (!name_or_err)
         return NULL;
+
     StringRef name = name_or_err.get();
     *size = name.size();
     return name.data();
@@ -174,12 +178,24 @@ LLVMRustArchiveChildName(LLVMRustArchiveChildConstRef child, size_t *size) {
 extern "C" const char*
 LLVMRustArchiveChildData(LLVMRustArchiveChildRef child, size_t *size) {
     StringRef buf;
+#if LLVM_VERSION_GE(4, 0)
+    Expected<StringRef> buf_or_err = child->getBuffer();
+
+    if (!buf_or_err) {
+      LLVMRustSetLastError(toString(buf_or_err.takeError()).c_str());
+      return NULL;
+    }
+
+    buf = buf_or_err.get();
+#else
     ErrorOr<StringRef> buf_or_err = child->getBuffer();
     if (buf_or_err.getError()) {
       LLVMRustSetLastError(buf_or_err.getError().message().c_str());
       return NULL;
     }
+#endif
     buf = buf_or_err.get();
+
     *size = buf.size();
     return buf.data();
 }
