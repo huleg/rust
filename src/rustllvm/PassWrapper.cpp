@@ -250,7 +250,7 @@ from_rust(LLVMRustCodeGenOptLevel level)
   }
 }
 
-#if LLVM_RUSTLLVM
+#if LLVM_RUSTLLVM && false
 /// getLongestEntryLength - Return the length of the longest entry in the table.
 ///
 static size_t getLongestEntryLength(ArrayRef<SubtargetFeatureKV> Table) {
