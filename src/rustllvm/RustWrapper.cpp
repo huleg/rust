@@ -653,7 +653,12 @@ extern "C" LLVMRustMetadataRef LLVMRustDIBuilderCreateStaticVariable(
         LineNo,
         unwrapDI<DIType>(Ty),
         isLocalToUnit,
+#if LLVM_VERSION_GE(4,0)
+        // unwrapDI<DIExpression>((LLVMRustMetadataRef) Val),
+                                              nullptr, // TODO: LOST usefulness
+#else
         cast<Constant>(unwrap(Val)),
+#endif
         unwrapDIptr<MDNode>(Decl)));
 }
 
