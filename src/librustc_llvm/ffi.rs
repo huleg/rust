@@ -1418,7 +1418,8 @@ extern "C" {
                                                  Ty: DIType,
                                                  isLocalToUnit: bool,
                                                  Val: ValueRef,
-                                                 Decl: DIDescriptor)
+                                                 Decl: DIDescriptor,
+                                                 AlignInBits: u64)
                                                  -> DIGlobalVariable;
 
     pub fn LLVMRustDIBuilderCreateVariable(Builder: DIBuilderRef,
@@ -1430,7 +1431,8 @@ extern "C" {
                                            Ty: DIType,
                                            AlwaysPreserve: bool,
                                            Flags: DIFlags,
-                                           ArgNo: c_uint)
+                                           ArgNo: c_uint,
+                                           AlignInBits: u64)
                                            -> DIVariable;
 
     pub fn LLVMRustDIBuilderCreateArrayType(Builder: DIBuilderRef,
